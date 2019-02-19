@@ -1,2 +1,2 @@
-# todo-list
-各个方式实现的 TodoList
+# Vue-todo-list
+Vue + Vue-Router + Vuex + Axios
