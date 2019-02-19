@@ -7,7 +7,7 @@
 import React, { Component, Fragment } from 'react';
 
 // 引入 action 操作
-import { getInputChangeAction, getAddItemAction, getDeleteItemAction, getTodoList } from './store/actionCreators';
+import { actionCreators } from './store';
 
 import { connect } from 'react-redux';
 
@@ -44,10 +44,14 @@ class TodoList extends Component {
 // 数据的映射关系
 const mapStateToProps = (state) => {
 	return {
-		inputValue: state.todoList.inputValue,
-		list: state.todoList.list
+		// 这里的 todoList 和 inputValue,list 都是 immutable 类型的数据，所以都要使用 get() 去获取
+		inputValue: state.get('todoList').get('inputValue'),
+		// 与上边的等价
+		list: state.getIn(['todoList', 'list'])
+		// list: state.get('todoList').get('list')
 	}
 }
+
 
 // 方法的映射关系
 const mapDispatchToProps = (dispatch) => {
@@ -59,25 +63,25 @@ const mapDispatchToProps = (dispatch) => {
 			// 	type: 'change_input_value',
 			// 	value: e.target.value
 			// }
-			const action = getInputChangeAction(e.target.value);
+			const action = actionCreators.getInputChangeAction(e.target.value);
 			dispatch(action);
 		},
 
 		// 添加数据
 		handleClick() {
-			const action = getAddItemAction();
+			const action = actionCreators.getAddItemAction();
 			dispatch(action);
 		},
 
 		// 删除数据
 		handleDelete(index) {
-			const action = getDeleteItemAction(index);
+			const action = actionCreators.getDeleteItemAction(index);
 			dispatch(action);
 		},
 
 		// 获取所有的 item 值
 		getTodoLists() {
-			const action = getTodoList();
+			const action = actionCreators.getTodoList();
 			dispatch(action);
 		}
 	}

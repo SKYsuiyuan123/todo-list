@@ -5,5 +5,7 @@
  * @Date: 2019-02-19 23:43:37
  */
 import reducer from './reducer';
+import * as actionCreators from './actionCreators';
 
-export { reducer };
+
+export { reducer, actionCreators };
