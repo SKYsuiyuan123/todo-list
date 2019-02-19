@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./static/css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h3>TodoList!</h3>
+        <div>
+            <input type="text" v-model="newTask" @keyup.enter="addTodo">
+            <button @click="addTodo">提交</button>
+        </div>
+        <hr>
+        <ul>
+            <li v-for="todo in todoList" :key="todo.id">
+                <input type="checkbox" @click.prevent="toggle(todo.id)" :checked="todo.done">
+                <span>{{todo.title}}</span>
+                <button @click="remove(todo.id)">删除</button>
+            </li>
+        </ul>
+    </div>
+
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                newTask: '', // 新增项
+                todoList: [] // 所有的列表
+            },
+            methods: {
+                addTodo() {
+                    if (this.newTask) {
+                        fetch('/api/todo', {
+                                method: 'post',
+                                headers: {
+                                    'Content-Type': 'application/json;charset=utf-8'
+                                },
+                                body: JSON.stringify({
+                                    title: this.newTask
+                                })
+                            })
+                            .then(res => {
+                                return res.json();
+                            })
+                            .then(data => {
+                                if (data.msg === 'success') {
+                                    this.todoList.push(data.result);
+                                    this.newTask = '';
+                                }
+                            })
+                            .catch(err => console.log(err));
+                    }
+                },
+                toggle(id) {
+                    fetch('/api/todo', {
+                            method: 'put',
+                            headers: {
+                                'Content-Type': 'application/json;charset=utf-8'
+                            },
+                            body: JSON.stringify({
+                                id
+                            })
+                        })
+                        .then(res => {
+                            return res.json();
+                        })
+                        .then(data => {
+                            if (data.msg === 'success') {
+                                let todo = this.todoList.find(todo => todo.id == id);
+                                todo.done = data.result.done;
+                            } else {
+                                alert(data.result);
+                            }
+                        })
+                        .catch(err => console.log(err));
+                },
+                remove(id) {
+                    fetch('/api/todo', {
+                            method: 'delete',
+                            headers: {
+                                'Content-Type': 'application/json;charset=utf-8'
+                            },
+                            body: JSON.stringify({
+                                id
+                            })
+                        })
+                        .then(res => {
+                            return res.json();
+                        })
+                        .then(data => {
+                            if (data.msg === 'success') {
+                                this.todoList = this.todoList.filter(todo => todo.id !== id);
+                            } else {
+                                alert(data.result);
+                            }
+                        })
+                        .catch(err => console.log(err));
+                }
+            },
+            created() {
+                fetch('/api/todo/all')
+                    .then(res => {
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data.msg === 'success') {
+                            this.todoList = data.result;
+                        }
+                        console.log(this.todoList);
+                    })
+                    .catch(err => console.log(err));
+            }
+        })
+    </script>
+</body>
+
+</html>
