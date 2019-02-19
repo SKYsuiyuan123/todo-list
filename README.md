@@ -10,8 +10,9 @@ npm i
 
 - 正式环境
     ```shell
+    # 使用 node 启动
     npm run start
-    // or
+    # or 使用 pm2 启动
     npm run server
     ```
 
@@ -19,4 +20,3 @@ npm i
     ```shell
     npm run dev
     ```
-
