@@ -7,7 +7,7 @@
 import { fromJS } from 'immutable';
 import { CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM, INIT_LIST_ACTION } from './actionTypes';
 
-// 定义一个 immutable 类型的数据
+// 定义一个 immutable 类型的数据, fromJS 会把对象里边的对象也变成 immutable 类型的数据。
 const defaultState = fromJS({
   inputValue: '',
   list: []
@@ -50,8 +50,13 @@ export default (state = defaultState, action) => {
   }
 
   // immutable 对象的 set 方法，会结合之前 immutable 对象的值和设置的值，返回一个全新的对象
-  return state.set('inputValue', newState.inputValue)
-    .set('list', newState.list);
+  return state.merge({
+    inputValue: newState.inputValue,
+    list: fromJS(newState.list)
+  });
+
+  // return state.set('inputValue', newState.inputValue)
+  //   .set('list', fromJS(newState.list));
 
   // 返回新的 state
   // return newState;

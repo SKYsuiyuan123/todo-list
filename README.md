@@ -1,4 +1,4 @@
-# React + React-Redux 的 TodoList 应用
+# React + React-Redux + Axios 的 TodoList 应用
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
