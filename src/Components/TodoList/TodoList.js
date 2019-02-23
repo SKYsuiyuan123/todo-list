@@ -5,14 +5,14 @@
  * @Date: 2019-02-19 17:43:08
  */
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
 
 // 引入 action 操作
 import { actionCreators } from './store';
 
-import { connect } from 'react-redux';
-
 // 引入 UI组件
 import TodoListUI from './TodoListUI';
+
 
 class TodoList extends Component {
 
