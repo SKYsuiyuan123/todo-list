@@ -42,15 +42,13 @@ class TodoList extends Component {
 
 
 // 数据的映射关系
-const mapStateToProps = (state) => {
-	return {
-		// 这里的 todoList 和 inputValue,list 都是 immutable 类型的数据，所以都要使用 get() 去获取
-		inputValue: state.get('todoList').get('inputValue'),
-		// 与上边的等价
-		list: state.getIn(['todoList', 'list'])
-		// list: state.get('todoList').get('list')
-	}
-}
+const mapStateToProps = (state) => ({
+	// 这里的 todoList 和 inputValue,list 都是 immutable 类型的数据，所以都要使用 get() 去获取
+	inputValue: state.get('todoList').get('inputValue'),
+	// 与上边的等价
+	list: state.getIn(['todoList', 'list'])
+	// list: state.get('todoList').get('list')
+});
 
 
 // 方法的映射关系

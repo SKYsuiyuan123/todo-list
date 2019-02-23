@@ -7,6 +7,8 @@
 import { fromJS } from 'immutable';
 import { CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM, INIT_LIST_ACTION } from './actionTypes';
 
+import * as Tips from '../../../Tips';
+
 // 定义一个 immutable 类型的数据, fromJS 会把对象里边的对象也变成 immutable 类型的数据。
 const defaultState = fromJS({
   inputValue: '',
@@ -35,10 +37,12 @@ export default (state = defaultState, action) => {
     case ADD_TODO_ITEM:
       newState.list.push(newState.inputValue);
       newState.inputValue = '';
+      Tips.success('数据添加成功!');
       break;
 
     case DELETE_TODO_ITEM:
       newState.list.splice(action.index, 1);
+      Tips.success('数据删除成功!');
       break;
 
     case INIT_LIST_ACTION:

@@ -12,6 +12,7 @@ import 'antd/dist/antd.css';
 const TodoListUI = (props) => {
 
   const { inputValue, list, changeInputValue, handleClick, handleDelete } = props;
+
   function delItem(index) {
     if (list.size === 1) {
 
@@ -33,6 +34,7 @@ const TodoListUI = (props) => {
       handleDelete(index);
     }
   }
+
   return (
     <div>
       <Input
@@ -45,21 +47,19 @@ const TodoListUI = (props) => {
       <List
         style={{ width: '80vw', margin: '20px auto' }}
         bordered
+        locale={{ emptyText: "目前暂无内容，请在上放输入内容，回车或点击按钮添加内容。" }}
         dataSource={list}
-        renderItem={(item, index) => (
-          <List.Item
-            actions={[
-              <Button
-                type="danger"
-                size="small"
-                onClick={() => delItem(index)}>
-                删除
+        renderItem={(item, index) => (<List.Item
+          actions={[<Button
+            type="danger"
+            size="small"
+            onClick={() => delItem(index)}>
+            删除
               </Button>]}>
-            {item}
-          </List.Item>
-        )}>
+          {item}
+        </List.Item>)}>
       </List>
-    </div>
+    </div >
   )
 }
 
