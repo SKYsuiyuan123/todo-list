@@ -46,7 +46,18 @@ const TodoListUI = (props) => {
         style={{ width: '80vw', margin: '20px auto' }}
         bordered
         dataSource={list}
-        renderItem={(item, index) => (<List.Item onClick={() => delItem(index)}>{item}</List.Item>)}>
+        renderItem={(item, index) => (
+          <List.Item
+            actions={[
+              <Button
+                type="danger"
+                size="small"
+                onClick={() => delItem(index)}>
+                删除
+              </Button>]}>
+            {item}
+          </List.Item>
+        )}>
       </List>
     </div>
   )
