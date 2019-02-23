@@ -19,7 +19,8 @@ const TodoListUI = (props) => {
         placeholder='Todo Info'
         value={inputValue}
         style={{ width: '40vw', marginRight: '10px' }}
-        onChange={changeInputValue} />
+        onChange={changeInputValue}
+        onKeyDown={(e) => e.keyCode === 13 && handleClick()} />
       <Button type='primary' onClick={handleClick}>提交</Button>
       <List
         style={{ width: '80vw', margin: '20px auto' }}
