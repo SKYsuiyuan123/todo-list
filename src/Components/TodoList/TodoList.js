@@ -4,7 +4,7 @@
  * @Description: file content
  * @Date: 2019-02-19 17:43:08
  */
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 
 // 引入 action 操作
@@ -14,7 +14,7 @@ import { actionCreators } from './store';
 import TodoListUI from './TodoListUI';
 
 
-class TodoList extends Component {
+class TodoList extends PureComponent {
 
 	constructor(props) {
 		super(props);
@@ -83,7 +83,7 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(action);
 		}
 	}
-}
+};
 
 
 // 返回一个容器组件 是 connect 执行后返回的结果。
