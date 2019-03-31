@@ -9,6 +9,8 @@ const router = new Router();
 const fs = require('fs');
 const util = require('util');
 
+const pool = require('../data/dbLink');
+
 const writeFile = util.promisify(fs.writeFile);
 
 
@@ -16,35 +18,42 @@ const writeFile = util.promisify(fs.writeFile);
 const dataPath = './data/todoList.json';
 const todoListData = require('../data/todoList.json');
 
+const queryData = (sql) => new Promise((resolve, reject) => {
+	pool.query(sql, (err, result) => {
+		if (err) {
+			reject(err);
+		} else {
+			resolve(result);
+		}
+	})
+});
 
 /**
  * GET /api/todo?id=xxx
  * 获取某一个todo
  */
 router.get('/', async ctx => {
-    let id = ctx.query.id;
+	let id = ctx.query.id;
 
-    let todo = todoListData.todos.find(todo => todo.id == id);
-    todo = todo || [];
+	let data = await queryData(`select * from todo where id = ${id}`);
 
-    let data = {
-        msg: 'success',
-        result: todo
-    }
-    ctx.body = data;
+	ctx.body = {
+		msg: 'success',
+		data
+	};
 })
-
 
 /**
  * GET /api/todo/all
  * 获取所有的 todoList
  */
 router.get('/all', async ctx => {
-    let data = {
-        msg: 'success',
-        result: todoListData.todos
-    }
-    ctx.body = data;
+	let data = await queryData('select * from todo');
+
+	ctx.body = {
+		msg: 'success',
+		data
+	};
 })
 
 
@@ -54,33 +63,22 @@ router.get('/all', async ctx => {
  */
 router.post('/', async ctx => {
 
-    let title = ctx.request.body.title;
+	let title = ctx.request.body.title;
 
-    if (!title) {
-        ctx.status = 400;
-        ctx.body = {
-            msg: 'error',
-            result: '请传入 title 值。'
-        };
-        return;
-    }
+	if (!title) {
+		ctx.status = 400;
+		ctx.body = {
+			msg: 'error',
+			result: '请传入 title 值。'
+		};
+		return;
+	}
 
-    let newTodo = {
-        id: ++todoListData._id,
-        title,
-        done: false
-    }
-    todoListData.todos.push(newTodo);
-
-    // 数据更改完毕，将数据存储回去。
-    let wf = await writeFile(dataPath, JSON.stringify(todoListData));
-
-    if (!wf) {
-        ctx.body = {
-            msg: 'success',
-            result: newTodo
-        };
-    }
+	let data = await queryData(`insert into todo(title, creat_time, done) values('${title}', '2019-03-31 23:40', false)`);
+	console.log(data);
+	ctx.body = {
+		msg: 'success',
+	};
 })
 
 
@@ -89,27 +87,25 @@ router.post('/', async ctx => {
  * 更改某一个的状态
  */
 router.put('/', async ctx => {
-    let id = parseInt(ctx.request.body.id);
-    if (!id) {
-        ctx.status = 400;
-        ctx.body = {
-            msg: 'error',
-            result: '请传入 id 值。'
-        };
-        return;
-    }
+	let id = parseInt(ctx.request.body.id);
+	if (!id) {
+		ctx.status = 400;
+		ctx.body = {
+			msg: 'error',
+			result: '请传入 id 值。'
+		};
+		return;
+	}
 
-    let todo = todoListData.todos.find(todo => todo.id === id);
-    todo.done = !todo.done;
+	let oldData = await queryData(`select done from todo where id = ${id}`);
 
-    let wf = await writeFile(dataPath, JSON.stringify(todoListData));
+	const done = !JSON.stringify(oldData)[0].done;
 
-    if (!wf) {
-        ctx.body = {
-            msg: 'success',
-            result: todo
-        };
-    }
+	let data = await queryData(`update todo set done=${done} where id=${id}`);
+	ctx.body = {
+		msg: 'success',
+	};
+
 })
 
 
@@ -118,28 +114,21 @@ router.put('/', async ctx => {
  * 删除某一个的状态
  */
 router.delete('/', async ctx => {
-    let id = parseInt(ctx.request.body.id);
-    if (!id) {
-        ctx.status = 400;
-        ctx.body = {
-            msg: 'error',
-            result: '请传入 id 值。'
-        };
-        return;
-    }
+	let id = parseInt(ctx.request.body.id);
+	if (!id) {
+		ctx.status = 400;
+		ctx.body = {
+			msg: 'error',
+			result: '请传入 id 值。'
+		};
+		return;
+	}
 
-    todoListData.todos = todoListData.todos.filter(todo => todo.id !== id);
-
-    let wf = await writeFile(dataPath, JSON.stringify(todoListData));
-
-    if (!wf) {
-        ctx.body = {
-            msg: 'success',
-            result: '删除成功'
-        };
-    }
+	let data = await queryData(`delete from todo where id=${id}`);
+	console.log(data);
+	ctx.body = {
+		msg: 'success',
+	};
 })
-
-
 
 module.exports = () => router.routes();
